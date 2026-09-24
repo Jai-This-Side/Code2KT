@@ -6,6 +6,8 @@ from dotenv import load_dotenv
 from google import genai
 from openai import OpenAI
 
+from app.services.aws_secrets import load_production_secrets
+
 
 load_dotenv()
 
@@ -15,21 +17,24 @@ class GeminiService:
     Multi-provider AI service.
 
     Provider priority:
-
     1. Gemini
     2. Groq
     3. OpenRouter
     """
 
     def __init__(self):
+        # Production: load credentials from AWS Secrets Manager.
+        # Local development: fall back to values from .env.
+        production_secrets = load_production_secrets()
+
+        for key, value in production_secrets.items():
+            os.environ[key] = value
+
         # ==================================================
         # GEMINI
         # ==================================================
 
-        self.gemini_api_key = os.getenv(
-            "GEMINI_API_KEY"
-        )
-
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
         self.gemini_model = os.getenv(
             "GEMINI_MODEL",
             "gemini-3.6-flash",
@@ -46,10 +51,7 @@ class GeminiService:
         # GROQ
         # ==================================================
 
-        self.groq_api_key = os.getenv(
-            "GROQ_API_KEY"
-        )
-
+        self.groq_api_key = os.getenv("GROQ_API_KEY")
         self.groq_model = os.getenv(
             "GROQ_MODEL",
             "openai/gpt-oss-20b",
@@ -60,9 +62,7 @@ class GeminiService:
         if self.groq_api_key:
             self.groq_client = OpenAI(
                 api_key=self.groq_api_key,
-                base_url=(
-                    "https://api.groq.com/openai/v1"
-                ),
+                base_url="https://api.groq.com/openai/v1",
             )
 
         # ==================================================
@@ -83,9 +83,7 @@ class GeminiService:
         if self.openrouter_api_key:
             self.openrouter_client = OpenAI(
                 api_key=self.openrouter_api_key,
-                base_url=(
-                    "https://openrouter.ai/api/v1"
-                ),
+                base_url="https://openrouter.ai/api/v1",
             )
 
         # Provider successfully used by the request.
@@ -153,36 +151,25 @@ class GeminiService:
 
         for provider_name, provider_function in providers:
 
-            # Tell the application which provider
-            # is currently being attempted.
             if on_provider_change:
-                on_provider_change(
-                    provider_name
-                )
+                on_provider_change(provider_name)
 
             try:
                 print(
-                    f"AI provider attempt: "
-                    f"{provider_name}"
+                    f"AI provider attempt: {provider_name}"
                 )
 
-                result = provider_function(
-                    prompt
-                )
+                result = provider_function(prompt)
 
                 if not result:
                     raise RuntimeError(
-                        f"{provider_name} returned "
-                        "an empty response"
+                        f"{provider_name} returned an empty response"
                     )
 
-                self.last_provider = (
-                    provider_name
-                )
+                self.last_provider = provider_name
 
                 print(
-                    f"AI provider succeeded: "
-                    f"{provider_name}"
+                    f"AI provider succeeded: {provider_name}"
                 )
 
                 return result
@@ -198,21 +185,18 @@ class GeminiService:
                 )
 
                 errors.append(
-                    f"{provider_name}: "
-                    f"{error_message}"
+                    f"{provider_name}: {error_message}"
                 )
 
-                if not self._is_retryable_error(
-                    exc
-                ):
+                if not self._is_retryable_error(exc):
                     raise RuntimeError(
                         f"{provider_name} failed: "
                         f"{error_message}"
                     ) from exc
 
                 print(
-                    f"{provider_name} temporary "
-                    "failure. Trying next provider."
+                    f"{provider_name} temporary failure. "
+                    "Trying next provider."
                 )
 
         raise RuntimeError(
@@ -236,16 +220,11 @@ class GeminiService:
 
         last_error = None
 
-        # Give Gemini a few retries before
-        # moving to Groq.
-
         for attempt in range(3):
 
             try:
-
                 response = (
-                    self.gemini_client.models
-                    .generate_content(
+                    self.gemini_client.models.generate_content(
                         model=self.gemini_model,
                         contents=prompt,
                     )
@@ -268,9 +247,7 @@ class GeminiService:
 
                 last_error = exc
 
-                if not self._is_retryable_error(
-                    exc
-                ):
+                if not self._is_retryable_error(exc):
                     raise
 
                 if attempt == 2:
@@ -305,10 +282,7 @@ class GeminiService:
             )
 
         response = (
-            self.groq_client
-            .chat
-            .completions
-            .create(
+            self.groq_client.chat.completions.create(
                 model=self.groq_model,
                 messages=[
                     {
@@ -320,10 +294,7 @@ class GeminiService:
         )
 
         result = (
-            response
-            .choices[0]
-            .message
-            .content
+            response.choices[0].message.content
         )
 
         if not result:
@@ -348,10 +319,7 @@ class GeminiService:
             )
 
         response = (
-            self.openrouter_client
-            .chat
-            .completions
-            .create(
+            self.openrouter_client.chat.completions.create(
                 model=self.openrouter_model,
                 messages=[
                     {
@@ -363,10 +331,7 @@ class GeminiService:
         )
 
         result = (
-            response
-            .choices[0]
-            .message
-            .content
+            response.choices[0].message.content
         )
 
         if not result:
