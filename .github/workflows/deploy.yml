@@ -1,0 +1,173 @@
+name: Code2KT CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-west-2
+  ECR_REGISTRY: 949163302239.dkr.ecr.us-west-2.amazonaws.com
+  ECR_REPOSITORY: code2kt
+  EC2_INSTANCE_ID: i-0534ad23ce1739764
+  AWS_ROLE_ARN: arn:aws:iam::949163302239:role/Code2KT-GitHubActions-Role
+  SECRET_NAME: code2kt/production
+
+jobs:
+  build-test-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # -------------------------
+      # 1. Checkout
+      # -------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # -------------------------
+      # 2. Python
+      # -------------------------
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # -------------------------
+      # 3. Install dependencies
+      # -------------------------
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # -------------------------
+      # 4. Run tests
+      # -------------------------
+      - name: Run tests
+        run: pytest -v
+
+      # -------------------------
+      # 5. Authenticate AWS
+      # -------------------------
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ env.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          allowed-account-ids: 949163302239
+
+      # -------------------------
+      # 6. Verify AWS identity
+      # -------------------------
+      - name: Verify AWS identity
+        run: |
+          aws sts get-caller-identity
+
+      # -------------------------
+      # 7. Login to ECR
+      # -------------------------
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region "$AWS_REGION" | \
+            docker login \
+              --username AWS \
+              --password-stdin "$ECR_REGISTRY"
+
+      # -------------------------
+      # 8. Build Docker image
+      # -------------------------
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA" \
+            -t "$ECR_REGISTRY/$ECR_REPOSITORY:latest" \
+            .
+
+      # -------------------------
+      # 9. Push Docker image
+      # -------------------------
+      - name: Push Docker image
+        run: |
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+
+      # -------------------------
+      # 10. Deploy to EC2
+      # -------------------------
+      - name: Deploy to EC2
+        shell: bash
+        run: |
+
+          IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$GITHUB_SHA"
+
+          cat > /tmp/deploy-command.json <<EOF
+          {
+            "InstanceIds": [
+              "$EC2_INSTANCE_ID"
+            ],
+            "DocumentName": "AWS-RunShellScript",
+            "Comment": "Deploy Code2KT $GITHUB_SHA",
+            "Parameters": {
+              "commands": [
+                "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REGISTRY",
+                "docker pull $IMAGE",
+                "docker rm -f code2kt 2>/dev/null || true",
+                "docker run -d --name code2kt --restart unless-stopped -e CODE2KT_SECRET_NAME=$SECRET_NAME -e AWS_REGION=$AWS_REGION -p 127.0.0.1:8000:8000 $IMAGE",
+                "sleep 5",
+                "curl -fsS http://127.0.0.1:8000/health"
+              ]
+            }
+          }
+          EOF
+
+          COMMAND_ID=$(aws ssm send-command \
+            --cli-input-json file:///tmp/deploy-command.json \
+            --region "$AWS_REGION" \
+            --query 'Command.CommandId' \
+            --output text)
+
+          echo "SSM Command ID: $COMMAND_ID"
+
+          for i in {1..30}; do
+
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$EC2_INSTANCE_ID" \
+              --region "$AWS_REGION" \
+              --query 'Status' \
+              --output text)
+
+            echo "Deployment status: $STATUS"
+
+            case "$STATUS" in
+              Success)
+                echo "Deployment successful."
+                exit 0
+                ;;
+
+              Failed|Cancelled|TimedOut|Cancelling)
+                echo "Deployment failed."
+                aws ssm get-command-invocation \
+                  --command-id "$COMMAND_ID" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --region "$AWS_REGION" \
+                  --query '{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}' \
+                  --output json
+                exit 1
+                ;;
+            esac
+
+            sleep 5
+          done
+
+          echo "Deployment timed out."
+          exit 1
