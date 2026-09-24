@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Code2KT — Generate Knowledge Transfer documentation from software projects."
+    >
+
+    <title>Code2KT</title>
+
+    <link
+        rel="stylesheet"
+        href="/static/styles.css"
+    >
+
+</head>
+
+
+<body>
+
+    <div class="shell">
+
+        <!-- ==================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="topbar">
+
+            <div class="brand">
+
+                <div class="brand-mark">
+                    &lt;/&gt;
+                </div>
+
+                <div>
+
+                    <div class="brand-name">
+                        Code2KT
+                    </div>
+
+                    <div class="brand-sub">
+                        Knowledge Transfer Generator
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="privacy-badge">
+
+                <span class="privacy-dot"></span>
+
+                Project analysis workspace
+
+            </div>
+
+        </header>
+
+
+        <!-- ==================================================
+             MAIN
+        ================================================== -->
+
+        <main>
+
+
+            <!-- ==================================================
+                 HERO
+            ================================================== -->
+
+            <section class="hero">
+
+                <div class="eyebrow">
+                    Static analysis + AI
+                </div>
+
+
+                <h1>
+
+                    Turn a codebase into
+
+                    <span>
+                        usable documentation.
+                    </span>
+
+                </h1>
+
+
+                <p>
+
+                    Upload a project ZIP.
+                    Code2KT analyzes the structure,
+                    technologies, code, and dependencies,
+                    then generates a developer-friendly
+                    Knowledge Transfer document.
+
+                </p>
+
+            </section>
+
+
+            <!-- ==================================================
+                 WORKSPACE
+            ================================================== -->
+
+            <section class="workspace">
+
+
+                <!-- ==================================================
+                     STEPS
+                ================================================== -->
+
+                <div class="steps">
+
+
+                    <div
+                        class="step active"
+                        id="step1"
+                    >
+
+                        <div class="step-number">
+                            1
+                        </div>
+
+                        <div class="step-label">
+                            Upload project
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="step"
+                        id="step2"
+                    >
+
+                        <div class="step-number">
+                            2
+                        </div>
+
+                        <div class="step-label">
+                            Review analysis
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="step"
+                        id="step3"
+                    >
+
+                        <div class="step-number">
+                            3
+                        </div>
+
+                        <div class="step-label">
+                            Get KT document
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================================
+                     CONTENT
+                ================================================== -->
+
+                <div class="content">
+
+
+                    <!-- ==================================================
+                         STEP 1
+                    ================================================== -->
+
+                    <section
+                        class="panel active"
+                        id="uploadPanel"
+                    >
+
+                        <div
+                            class="upload-area"
+                            id="uploadArea"
+                            role="button"
+                            tabindex="0"
+                            aria-label="Choose a project ZIP file"
+                        >
+
+                            <div class="upload-icon">
+                                ↑
+                            </div>
+
+
+                            <h2>
+                                Drop your project ZIP here
+                            </h2>
+
+
+                            <p>
+                                or click anywhere in this box to browse
+                            </p>
+
+
+                            <div class="upload-hint">
+                                ZIP files only
+                            </div>
+
+
+                            <input
+                                id="fileInput"
+                                type="file"
+                                accept=".zip,application/zip"
+                            >
+
+                        </div>
+
+
+                        <div
+                            class="file-preview"
+                            id="filePreview"
+                        >
+
+                            <div>
+
+                                <div
+                                    class="file-name"
+                                    id="fileName"
+                                >
+                                    project.zip
+                                </div>
+
+
+                                <div
+                                    class="file-size"
+                                    id="fileSize"
+                                >
+                                    0 KB
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                class="secondary-button"
+                                id="uploadButton"
+                                type="button"
+                            >
+                                Analyze project
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="progress"
+                            id="uploadProgress"
+                        >
+
+                            <div class="progress-row">
+
+                                <div class="progress-row-left">
+
+                                    <div class="spinner"></div>
+
+                                    <span
+                                        id="uploadStatus"
+                                        aria-live="polite"
+                                    >
+                                        Uploading and analyzing your project...
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="error"
+                            id="errorBox"
+                        ></div>
+
+
+                    </section>
+
+
+                    <!-- ==================================================
+                         STEP 2
+                    ================================================== -->
+
+                    <section
+                        class="panel"
+                        id="analysisPanel"
+                    >
+
+                        <div class="summary-head">
+
+
+                            <div>
+
+                                <h2
+                                    class="summary-title"
+                                    id="projectName"
+                                >
+                                    Project
+                                </h2>
+
+
+                                <p
+                                    class="summary-subtitle"
+                                    id="projectRoot"
+                                >
+                                    Project root
+                                </p>
+
+                            </div>
+
+
+                            <div class="success-label">
+
+                                <span>
+                                    ●
+                                </span>
+
+                                Analysis complete
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             STATS
+                        ================================================== -->
+
+                        <div class="stats">
+
+
+                            <div class="stat">
+
+                                <div
+                                    class="stat-value"
+                                    id="fileCount"
+                                >
+                                    —
+                                </div>
+
+                                <div class="stat-label">
+                                    Files detected
+                                </div>
+
+                            </div>
+
+
+                            <div class="stat">
+
+                                <div
+                                    class="stat-value"
+                                    id="directoryCount"
+                                >
+                                    —
+                                </div>
+
+                                <div class="stat-label">
+                                    Directories
+                                </div>
+
+                            </div>
+
+
+                            <div class="stat">
+
+                                <div
+                                    class="stat-value"
+                                    id="languageCount"
+                                >
+                                    —
+                                </div>
+
+                                <div class="stat-label">
+                                    Languages
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             LANGUAGES
+                        ================================================== -->
+
+                        <div class="section-title">
+                            Languages
+                        </div>
+
+
+                        <div
+                            class="chips"
+                            id="languageChips"
+                        ></div>
+
+
+                        <div class="section-spacer"></div>
+
+
+                        <!-- ==================================================
+                             TECHNOLOGIES
+                        ================================================== -->
+
+                        <div class="section-title">
+                            Technologies detected
+                        </div>
+
+
+                        <div
+                            class="chips"
+                            id="technologyChips"
+                        ></div>
+
+
+                        <!-- ==================================================
+                             GENERATE
+                        ================================================== -->
+
+                        <div class="action-row">
+
+                            <button
+                                class="primary-button"
+                                id="generateButton"
+                                type="button"
+                            >
+                                Generate Knowledge Transfer
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            class="progress"
+                            id="generateProgress"
+                        >
+
+                            <div class="progress-row">
+
+                                <div class="progress-row-left">
+
+                                    <div class="spinner"></div>
+
+                                    <span
+                                        id="generateStatus"
+                                        aria-live="polite"
+                                    >
+                                        Selecting an AI provider...
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="error"
+                            id="analysisError"
+                        ></div>
+
+
+                    </section>
+
+
+                    <!-- ==================================================
+                         STEP 3
+                    ================================================== -->
+
+                    <section
+                        class="panel"
+                        id="resultPanel"
+                    >
+
+
+                        <div class="summary-head">
+
+
+                            <div>
+
+                                <h2 class="summary-title">
+                                    Knowledge Transfer ready
+                                </h2>
+
+
+                                <p class="summary-subtitle">
+                                    A structured developer document generated from the project's static analysis.
+                                </p>
+
+                            </div>
+
+
+                            <div class="success-label">
+
+                                <span>
+                                    ●
+                                </span>
+
+                                Complete
+
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             DOCUMENT META
+                        ================================================== -->
+
+                        <div class="kt-meta">
+
+
+                            <div class="kt-provider">
+
+                                <span class="kt-provider-dot"></span>
+
+                                <span>
+                                    Generated with
+                                </span>
+
+                                <strong id="resultProvider">
+                                    AI
+                                </strong>
+
+                            </div>
+
+
+                            <div
+                                class="kt-section-count"
+                                id="ktSectionCount"
+                            >
+                                Document
+                            </div>
+
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             DOCUMENT LAYOUT
+                        ================================================== -->
+
+                        <div class="kt-layout">
+
+
+                            <!-- ==================================================
+                                 DOCUMENT NAVIGATION
+                            ================================================== -->
+
+                            <aside class="kt-sidebar">
+
+                                <div class="kt-sidebar-title">
+                                    ON THIS PAGE
+                                </div>
+
+
+                                <nav
+                                    id="documentNav"
+                                    aria-label="Knowledge Transfer sections"
+                                ></nav>
+
+                            </aside>
+
+
+                            <!-- ==================================================
+                                 DOCUMENT
+                            ================================================== -->
+
+                            <div class="kt-document">
+
+
+                                <div class="document-toolbar">
+
+
+                                    <div class="document-label">
+                                        knowledge-transfer.md
+                                    </div>
+
+
+                                    <div class="document-actions">
+
+
+                                        <button
+                                            class="mini-button"
+                                            id="copyButton"
+                                            type="button"
+                                        >
+                                            Copy
+                                        </button>
+
+
+                                        <button
+                                            class="mini-button"
+                                            id="downloadButton"
+                                            type="button"
+                                        >
+                                            Download
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <article
+                                    class="markdown-body"
+                                    id="ktRendered"
+                                ></article>
+
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             NEW PROJECT
+                        ================================================== -->
+
+                        <div class="action-row">
+
+                            <button
+                                class="secondary-button"
+                                id="newProjectButton"
+                                type="button"
+                            >
+                                Analyze another project
+                            </button>
+
+                        </div>
+
+
+                    </section>
+
+
+                </div>
+
+            </section>
+
+        </main>
+
+
+        <footer>
+            Code2KT
+        </footer>
+
+
+    </div>
+
+
+    <!-- ==================================================
+         JAVASCRIPT
+    ================================================== -->
+
+    <script>
+
+
+        /* ==================================================
+           ELEMENTS
+        ================================================== */
+
+        const uploadArea =
+            document.getElementById(
+                "uploadArea"
+            );
+
+
+        const fileInput =
+            document.getElementById(
+                "fileInput"
+            );
+
+
+        const filePreview =
+            document.getElementById(
+                "filePreview"
+            );
+
+
+        const fileName =
+            document.getElementById(
+                "fileName"
+            );
+
+
+        const fileSize =
+            document.getElementById(
+                "fileSize"
+            );
+
+
+        const uploadButton =
+            document.getElementById(
+                "uploadButton"
+            );
+
+
+        const errorBox =
+            document.getElementById(
+                "errorBox"
+            );
+
+
+        const analysisError =
+            document.getElementById(
+                "analysisError"
+            );
+
+
+        const uploadPanel =
+            document.getElementById(
+                "uploadPanel"
+            );
+
+
+        const analysisPanel =
+            document.getElementById(
+                "analysisPanel"
+            );
+
+
+        const resultPanel =
+            document.getElementById(
+                "resultPanel"
+            );
+
+
+        const steps = [
+            document.getElementById("step1"),
+            document.getElementById("step2"),
+            document.getElementById("step3")
+        ];
+
+
+        const uploadProgress =
+            document.getElementById(
+                "uploadProgress"
+            );
+
+
+        const generateProgress =
+            document.getElementById(
+                "generateProgress"
+            );
+
+
+        const uploadStatus =
+            document.getElementById(
+                "uploadStatus"
+            );
+
+
+        const generateStatus =
+            document.getElementById(
+                "generateStatus"
+            );
+
+
+        const generateButton =
+            document.getElementById(
+                "generateButton"
+            );
+
+
+        const copyButton =
+            document.getElementById(
+                "copyButton"
+            );
+
+
+        const downloadButton =
+            document.getElementById(
+                "downloadButton"
+            );
+
+
+        const newProjectButton =
+            document.getElementById(
+                "newProjectButton"
+            );
+
+
+        const resultProvider =
+            document.getElementById(
+                "resultProvider"
+            );
+
+
+        const ktRendered =
+            document.getElementById(
+                "ktRendered"
+            );
+
+
+        const documentNav =
+            document.getElementById(
+                "documentNav"
+            );
+
+
+        const ktSectionCount =
+            document.getElementById(
+                "ktSectionCount"
+            );
+
+
+        /* ==================================================
+           STATE
+        ================================================== */
+
+        let selectedFile = null;
+
+        let currentProjectId = null;
+
+        let currentFilename =
+            "knowledge-transfer.md";
+
+        let currentKT = "";
+
+
+        /* ==================================================
+           STEP STATE
+        ================================================== */
+
+        function setStep(current) {
+
+            steps.forEach(
+                (
+                    step,
+                    index
+                ) => {
+
+                    step.classList.toggle(
+                        "active",
+                        index === current
+                    );
+
+
+                    step.classList.toggle(
+                        "done",
+                        index < current
+                    );
+
+
+                    if (index < current) {
+
+                        step.querySelector(
+                            ".step-number"
+                        ).textContent = "✓";
+
+                    } else {
+
+                        step.querySelector(
+                            ".step-number"
+                        ).textContent =
+                            String(
+                                index + 1
+                            );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* ==================================================
+           PANEL
+        ================================================== */
+
+        function showPanel(panel) {
+
+            [
+                uploadPanel,
+                analysisPanel,
+                resultPanel
+            ].forEach(
+                (item) => {
+
+                    item.classList.remove(
+                        "active"
+                    );
+
+                }
+            );
+
+
+            panel.classList.add(
+                "active"
+            );
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* ==================================================
+           ERROR
+        ================================================== */
+
+        function showError(
+            target,
+            message
+        ) {
+
+            target.textContent =
+                message;
+
+            target.classList.add(
+                "show"
+            );
+
+        }
+
+
+        function clearErrors() {
+
+            errorBox.classList.remove(
+                "show"
+            );
+
+
+            analysisError.classList.remove(
+                "show"
+            );
+
+
+            errorBox.textContent = "";
+
+
+            analysisError.textContent = "";
+
+        }
+
+
+        /* ==================================================
+           FILE SIZE
+        ================================================== */
+
+        function formatSize(bytes) {
+
+            if (bytes < 1024) {
+
+                return `${bytes} B`;
+
+            }
+
+
+            if (
+                bytes <
+                1024 * 1024
+            ) {
+
+                return `${(
+                    bytes / 1024
+                ).toFixed(1)} KB`;
+
+            }
+
+
+            return `${(
+                bytes /
+                (
+                    1024 *
+                    1024
+                )
+            ).toFixed(1)} MB`;
+
+        }
+
+
+        /* ==================================================
+           CHIPS
+        ================================================== */
+
+        function renderChips(
+            container,
+            values
+        ) {
+
+            container.innerHTML = "";
+
+
+            if (
+                !values ||
+                values.length === 0
+            ) {
+
+                const chip =
+                    document.createElement(
+                        "span"
+                    );
+
+
+                chip.className =
+                    "chip";
+
+
+                chip.textContent =
+                    "None detected";
+
+
+                container.appendChild(
+                    chip
+                );
+
+
+                return;
+
+            }
+
+
+            values.forEach(
+                (value) => {
+
+                    const chip =
+                        document.createElement(
+                            "span"
+                        );
+
+
+                    chip.className =
+                        "chip";
+
+
+                    chip.textContent =
+                        value;
+
+
+                    container.appendChild(
+                        chip
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* ==================================================
+           RESET UI
+        ================================================== */
+
+        function resetUI() {
+
+            clearErrors();
+
+
+            selectedFile = null;
+
+            currentProjectId = null;
+
+            currentKT = "";
+
+
+            currentFilename =
+                "knowledge-transfer.md";
+
+
+            fileInput.value = "";
+
+
+            filePreview.classList.remove(
+                "show"
+            );
+
+
+            uploadButton.disabled =
+                false;
+
+
+            generateButton.disabled =
+                false;
+
+
+            uploadProgress.classList.remove(
+                "show"
+            );
+
+
+            generateProgress.classList.remove(
+                "show"
+            );
+
+
+            generateStatus.textContent =
+                "Selecting an AI provider...";
+
+
+            resultProvider.textContent =
+                "AI";
+
+
+            ktSectionCount.textContent =
+                "Document";
+
+
+            ktRendered.innerHTML = "";
+
+
+            documentNav.innerHTML = "";
+
+
+            setStep(0);
+
+
+            showPanel(
+                uploadPanel
+            );
+
+        }
+
+
+        /* ==================================================
+           SELECT FILE
+        ================================================== */
+
+        function selectFile(file) {
+
+            clearErrors();
+
+
+            if (
+                !file.name
+                    .toLowerCase()
+                    .endsWith(".zip")
+            ) {
+
+                showError(
+                    errorBox,
+                    "Please select a ZIP file."
+                );
+
+                return;
+
+            }
+
+
+            selectedFile = file;
+
+
+            fileName.textContent =
+                file.name;
+
+
+            fileSize.textContent =
+                formatSize(
+                    file.size
+                );
+
+
+            filePreview.classList.add(
+                "show"
+            );
+
+        }
+
+
+        /* ==================================================
+           UPLOAD AREA
+        ================================================== */
+
+        uploadArea.addEventListener(
+            "click",
+            () => {
+
+                fileInput.click();
+
+            }
+        );
+
+
+        uploadArea.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key === "Enter" ||
+                    event.key === " "
+                ) {
+
+                    event.preventDefault();
+
+                    fileInput.click();
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           DRAG / DROP
+        ================================================== */
+
+        [
+            "dragenter",
+            "dragover"
+        ].forEach(
+            (eventName) => {
+
+                uploadArea.addEventListener(
+                    eventName,
+                    (event) => {
+
+                        event.preventDefault();
+
+                        uploadArea.classList.add(
+                            "dragover"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        [
+            "dragleave",
+            "drop"
+        ].forEach(
+            (eventName) => {
+
+                uploadArea.addEventListener(
+                    eventName,
+                    (event) => {
+
+                        event.preventDefault();
+
+                        uploadArea.classList.remove(
+                            "dragover"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        uploadArea.addEventListener(
+            "drop",
+            (event) => {
+
+                const [
+                    file
+                ] =
+                    event.dataTransfer.files ||
+                    [];
+
+
+                if (file) {
+
+                    selectFile(file);
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           FILE INPUT
+        ================================================== */
+
+        fileInput.addEventListener(
+            "change",
+            () => {
+
+                const [
+                    file
+                ] =
+                    fileInput.files ||
+                    [];
+
+
+                if (file) {
+
+                    selectFile(file);
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           UPLOAD PROJECT
+        ================================================== */
+
+        uploadButton.addEventListener(
+            "click",
+            async () => {
+
+                if (!selectedFile) {
+
+                    showError(
+                        errorBox,
+                        "Choose a project ZIP file first."
+                    );
+
+                    return;
+
+                }
+
+
+                clearErrors();
+
+
+                uploadButton.disabled =
+                    true;
+
+
+                uploadProgress.classList.add(
+                    "show"
+                );
+
+
+                uploadStatus.textContent =
+                    "Uploading and analyzing your project...";
+
+
+                try {
+
+                    const formData =
+                        new FormData();
+
+
+                    formData.append(
+                        "file",
+                        selectedFile
+                    );
+
+
+                    const response =
+                        await fetch(
+                            "/projects/upload",
+                            {
+                                method: "POST",
+                                body: formData
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            typeof data.detail === "string"
+                                ? data.detail
+                                : "The project could not be analyzed."
+                        );
+
+                    }
+
+
+                    currentProjectId =
+                        data.project_id;
+
+
+                    currentFilename =
+                        `${
+                            data.filename
+                                .replace(
+                                    /\.zip$/i,
+                                    ""
+                                )
+                        }-knowledge-transfer.md`;
+
+
+                    const analysis =
+                        data.analysis ||
+                        {};
+
+
+                    const technologies =
+                        (
+                            analysis.technologies ||
+                            []
+                        ).map(
+                            (item) =>
+                                item.name
+                        );
+
+
+                    const languages =
+                        analysis.languages ||
+                        [];
+
+
+                    document.getElementById(
+                        "projectName"
+                    ).textContent =
+                        data.filename ||
+                        "Project";
+
+
+                    document.getElementById(
+                        "projectRoot"
+                    ).textContent =
+                        `Root: ${
+                            analysis.project_root ||
+                            "."
+                        }`;
+
+
+                    document.getElementById(
+                        "fileCount"
+                    ).textContent =
+                        analysis.file_count ??
+                        "—";
+
+
+                    document.getElementById(
+                        "directoryCount"
+                    ).textContent =
+                        analysis.directory_count ??
+                        "—";
+
+
+                    document.getElementById(
+                        "languageCount"
+                    ).textContent =
+                        languages.length;
+
+
+                    renderChips(
+                        document.getElementById(
+                            "languageChips"
+                        ),
+                        languages
+                    );
+
+
+                    renderChips(
+                        document.getElementById(
+                            "technologyChips"
+                        ),
+                        technologies
+                    );
+
+
+                    uploadProgress.classList.remove(
+                        "show"
+                    );
+
+
+                    uploadButton.disabled =
+                        false;
+
+
+                    setStep(1);
+
+
+                    showPanel(
+                        analysisPanel
+                    );
+
+                } catch (error) {
+
+                    uploadProgress.classList.remove(
+                        "show"
+                    );
+
+
+                    uploadButton.disabled =
+                        false;
+
+
+                    showError(
+                        errorBox,
+                        error.message ||
+                        "Something went wrong while analyzing the project."
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           GENERATION STATUS
+        ================================================== */
+
+        async function updateGenerationStatus() {
+
+            if (!currentProjectId) {
+
+                return;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/projects/${
+                            encodeURIComponent(
+                                currentProjectId
+                            )
+                        }/generation-status`
+                    );
+
+
+                if (!response.ok) {
+
+                    return;
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.message) {
+
+                    generateStatus.textContent =
+                        data.message;
+
+                } else if (data.provider) {
+
+                    generateStatus.textContent =
+                        `Generating the KT document with ${data.provider}...`;
+
+                }
+
+            } catch {
+
+                // Ignore temporary polling errors.
+
+            }
+
+        }
+
+
+        /* ==================================================
+           ESCAPE HTML
+        ================================================== */
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replaceAll(
+                    "&",
+                    "&amp;"
+                )
+                .replaceAll(
+                    "<",
+                    "&lt;"
+                )
+                .replaceAll(
+                    ">",
+                    "&gt;"
+                )
+                .replaceAll(
+                    '"',
+                    "&quot;"
+                )
+                .replaceAll(
+                    "'",
+                    "&#039;"
+                );
+
+        }
+
+
+        /* ==================================================
+           INLINE MARKDOWN
+        ================================================== */
+
+        function renderInlineMarkdown(
+            value
+        ) {
+
+            let html =
+                escapeHTML(
+                    value
+                );
+
+
+            html = html.replace(
+                /`([^`]+)`/g,
+                "<code>$1</code>"
+            );
+
+
+            html = html.replace(
+                /\*\*([^*]+)\*\*/g,
+                "<strong>$1</strong>"
+            );
+
+
+            html = html.replace(
+                /(?<!\*)\*([^*]+)\*(?!\*)/g,
+                "<em>$1</em>"
+            );
+
+
+            html = html.replace(
+                /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,
+                '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
+            );
+
+
+            return html;
+
+        }
+
+
+        /* ==================================================
+           MARKDOWN RENDERER
+        ================================================== */
+
+        function renderMarkdown(
+            markdown
+        ) {
+
+            const lines =
+                markdown
+                    .replaceAll(
+                        "\r\n",
+                        "\n"
+                    )
+                    .split("\n");
+
+
+            let html = "";
+
+            let inCodeBlock = false;
+
+            let codeLines = [];
+
+            let inList = false;
+
+            let listType = null;
+
+            let paragraph = [];
+
+            let sectionCount = 0;
+
+
+            function closeList() {
+
+                if (!inList) {
+
+                    return;
+
+                }
+
+
+                html +=
+                    `</${listType}>`;
+
+
+                inList = false;
+
+                listType = null;
+
+            }
+
+
+            function closeParagraph() {
+
+                if (
+                    paragraph.length === 0
+                ) {
+
+                    return;
+
+                }
+
+
+                html +=
+                    `<p>${renderInlineMarkdown(
+                        paragraph.join(" ")
+                    )}</p>`;
+
+
+                paragraph = [];
+
+            }
+
+
+            function closeBlocks() {
+
+                closeParagraph();
+
+                closeList();
+
+            }
+
+
+            function addHeading(
+                level,
+                text
+            ) {
+
+                closeBlocks();
+
+
+                sectionCount++;
+
+
+                const slug =
+                    text
+                        .toLowerCase()
+                        .replace(
+                            /[^a-z0-9]+/g,
+                            "-"
+                        )
+                        .replace(
+                            /^-+|-+$/g,
+                            ""
+                        );
+
+
+                html +=
+                    `<h${level}
+                        id="kt-${sectionCount}-${slug}"
+                    >
+                        ${renderInlineMarkdown(text)}
+                    </h${level}>`;
+
+            }
+
+
+            for (
+                let index = 0;
+                index < lines.length;
+                index++
+            ) {
+
+                const line =
+                    lines[index];
+
+
+                /* ------------------------------------------
+                   CODE BLOCK
+                ------------------------------------------ */
+
+                if (
+                    line.trim().startsWith("```")
+                ) {
+
+                    if (!inCodeBlock) {
+
+                        closeBlocks();
+
+                        inCodeBlock = true;
+
+                        codeLines = [];
+
+                    } else {
+
+                        html +=
+                            `<pre><code>${escapeHTML(
+                                codeLines.join("\n")
+                            )}</code></pre>`;
+
+
+                        inCodeBlock = false;
+
+                        codeLines = [];
+
+                    }
+
+
+                    continue;
+
+                }
+
+
+                if (inCodeBlock) {
+
+                    codeLines.push(
+                        line
+                    );
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   EMPTY LINE
+                ------------------------------------------ */
+
+                if (
+                    line.trim() === ""
+                ) {
+
+                    closeBlocks();
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   HEADINGS
+                ------------------------------------------ */
+
+                const heading =
+                    line.match(
+                        /^(#{1,3})\s+(.+)$/
+                    );
+
+
+                if (heading) {
+
+                    addHeading(
+                        heading[1].length,
+                        heading[2]
+                    );
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   HORIZONTAL RULE
+                ------------------------------------------ */
+
+                if (
+                    /^(\*{3,}|-{3,}|_{3,})$/.test(
+                        line.trim()
+                    )
+                ) {
+
+                    closeBlocks();
+
+                    html +=
+                        "<hr>";
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   BLOCKQUOTE
+                ------------------------------------------ */
+
+                if (
+                    line.startsWith(">")
+                ) {
+
+                    closeParagraph();
+
+                    closeList();
+
+
+                    html +=
+                        `<blockquote>${renderInlineMarkdown(
+                            line.replace(
+                                /^>\s?/,
+                                ""
+                            )
+                        )}</blockquote>`;
+
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   BULLET LIST
+                ------------------------------------------ */
+
+                const bullet =
+                    line.match(
+                        /^\s*[-*]\s+(.+)$/
+                    );
+
+
+                if (bullet) {
+
+                    closeParagraph();
+
+
+                    if (
+                        !inList ||
+                        listType !== "ul"
+                    ) {
+
+                        closeList();
+
+                        html +=
+                            "<ul>";
+
+                        inList = true;
+
+                        listType = "ul";
+
+                    }
+
+
+                    html +=
+                        `<li>${renderInlineMarkdown(
+                            bullet[1]
+                        )}</li>`;
+
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   ORDERED LIST
+                ------------------------------------------ */
+
+                const ordered =
+                    line.match(
+                        /^\s*\d+\.\s+(.+)$/
+                    );
+
+
+                if (ordered) {
+
+                    closeParagraph();
+
+
+                    if (
+                        !inList ||
+                        listType !== "ol"
+                    ) {
+
+                        closeList();
+
+                        html +=
+                            "<ol>";
+
+                        inList = true;
+
+                        listType = "ol";
+
+                    }
+
+
+                    html +=
+                        `<li>${renderInlineMarkdown(
+                            ordered[1]
+                        )}</li>`;
+
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   TABLE
+                ------------------------------------------ */
+
+                if (
+                    line.trim().startsWith("|") &&
+                    index + 1 < lines.length &&
+                    /^\s*\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?\s*$/.test(
+                        lines[index + 1]
+                    )
+                ) {
+
+                    closeBlocks();
+
+
+                    const headerCells =
+                        line
+                            .trim()
+                            .replace(
+                                /^\||\|$/g,
+                                ""
+                            )
+                            .split("|")
+                            .map(
+                                (cell) =>
+                                    cell.trim()
+                            );
+
+
+                    index++;
+
+
+                    html +=
+                        "<table><thead><tr>";
+
+
+                    headerCells.forEach(
+                        (cell) => {
+
+                            html +=
+                                `<th>${renderInlineMarkdown(
+                                    cell
+                                )}</th>`;
+
+                        }
+                    );
+
+
+                    html +=
+                        "</tr></thead><tbody>";
+
+
+                    while (
+                        index + 1 < lines.length &&
+                        lines[index + 1]
+                            .trim()
+                            .startsWith("|")
+                    ) {
+
+                        index++;
+
+
+                        const rowCells =
+                            lines[index]
+                                .trim()
+                                .replace(
+                                    /^\||\|$/g,
+                                    ""
+                                )
+                                .split("|")
+                                .map(
+                                    (cell) =>
+                                        cell.trim()
+                                );
+
+
+                        html +=
+                            "<tr>";
+
+
+                        rowCells.forEach(
+                            (cell) => {
+
+                                html +=
+                                    `<td>${renderInlineMarkdown(
+                                        cell
+                                    )}</td>`;
+
+                            }
+                        );
+
+
+                        html +=
+                            "</tr>";
+
+                    }
+
+
+                    html +=
+                        "</tbody></table>";
+
+
+                    continue;
+
+                }
+
+
+                /* ------------------------------------------
+                   PARAGRAPH
+                ------------------------------------------ */
+
+                paragraph.push(
+                    line.trim()
+                );
+
+            }
+
+
+            closeBlocks();
+
+
+            if (inCodeBlock) {
+
+                html +=
+                    `<pre><code>${escapeHTML(
+                        codeLines.join("\n")
+                    )}</code></pre>`;
+
+            }
+
+
+            return {
+                html,
+                sectionCount
+            };
+
+        }
+
+
+        /* ==================================================
+           DOCUMENT NAVIGATION
+        ================================================== */
+
+        function buildDocumentNavigation() {
+
+            documentNav.innerHTML = "";
+
+
+            const headings =
+                ktRendered.querySelectorAll(
+                    "h1, h2, h3"
+                );
+
+
+            headings.forEach(
+                (heading) => {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.type =
+                        "button";
+
+
+                    button.className =
+                        `document-nav-item level-${
+                            heading.tagName.substring(1)
+                        }`;
+
+
+                    button.textContent =
+                        heading.textContent;
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            heading.scrollIntoView({
+                                behavior:
+                                    "smooth",
+
+                                block:
+                                    "start"
+                            });
+
+                        }
+                    );
+
+
+                    documentNav.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+
+            ktSectionCount.textContent =
+                `${
+                    headings.length
+                } sections`;
+
+        }
+
+
+        /* ==================================================
+           GENERATE KNOWLEDGE TRANSFER
+        ================================================== */
+
+        generateButton.addEventListener(
+            "click",
+            async () => {
+
+                if (!currentProjectId) {
+
+                    showError(
+                        analysisError,
+                        "No analyzed project is available."
+                    );
+
+                    return;
+
+                }
+
+
+                clearErrors();
+
+
+                generateButton.disabled =
+                    true;
+
+
+                generateProgress.classList.add(
+                    "show"
+                );
+
+
+                generateStatus.textContent =
+                    "Selecting an AI provider...";
+
+
+                // Poll provider status while
+                // the generation request runs.
+
+                await updateGenerationStatus();
+
+
+                const statusInterval =
+                    setInterval(
+                        updateGenerationStatus,
+                        400
+                    );
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            `/projects/${
+                                encodeURIComponent(
+                                    currentProjectId
+                                )
+                            }/generate-knowledge-transfer`,
+                            {
+                                method: "POST"
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            typeof data.detail === "string"
+                                ? data.detail
+                                : "Knowledge Transfer generation failed."
+                        );
+
+                    }
+
+
+                    currentKT =
+                        data.knowledge_transfer ||
+                        "";
+
+
+                    if (!currentKT) {
+
+                        throw new Error(
+                            "The generated Knowledge Transfer document was empty."
+                        );
+
+                    }
+
+
+                    /* --------------------------------------
+                       Render Markdown
+                    -------------------------------------- */
+
+                    const rendered =
+                        renderMarkdown(
+                            currentKT
+                        );
+
+
+                    ktRendered.innerHTML =
+                        rendered.html;
+
+
+                    buildDocumentNavigation();
+
+
+                    /* --------------------------------------
+                       Provider
+                    -------------------------------------- */
+
+                    resultProvider.textContent =
+                        data.provider ||
+                        "AI";
+
+
+                    clearInterval(
+                        statusInterval
+                    );
+
+
+                    generateProgress.classList.remove(
+                        "show"
+                    );
+
+
+                    generateButton.disabled =
+                        false;
+
+
+                    setStep(2);
+
+
+                    showPanel(
+                        resultPanel
+                    );
+
+                } catch (error) {
+
+                    clearInterval(
+                        statusInterval
+                    );
+
+
+                    generateProgress.classList.remove(
+                        "show"
+                    );
+
+
+                    generateButton.disabled =
+                        false;
+
+
+                    showError(
+                        analysisError,
+                        error.message ||
+                        "Something went wrong while generating the document."
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           COPY
+        ================================================== */
+
+        copyButton.addEventListener(
+            "click",
+            async () => {
+
+                if (!currentKT) {
+
+                    return;
+
+                }
+
+
+                try {
+
+                    await navigator.clipboard.writeText(
+                        currentKT
+                    );
+
+
+                    copyButton.textContent =
+                        "Copied";
+
+
+                    setTimeout(
+                        () => {
+
+                            copyButton.textContent =
+                                "Copy";
+
+                        },
+                        1400
+                    );
+
+                } catch {
+
+                    copyButton.textContent =
+                        "Copy failed";
+
+
+                    setTimeout(
+                        () => {
+
+                            copyButton.textContent =
+                                "Copy";
+
+                        },
+                        1400
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ==================================================
+           DOWNLOAD
+        ================================================== */
+
+        downloadButton.addEventListener(
+            "click",
+            () => {
+
+                if (!currentKT) {
+
+                    return;
+
+                }
+
+
+                const blob =
+                    new Blob(
+                        [
+                            currentKT
+                        ],
+                        {
+                            type:
+                                "text/markdown;charset=utf-8"
+                        }
+                    );
+
+
+                const url =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.href =
+                    url;
+
+
+                link.download =
+                    currentFilename;
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                link.remove();
+
+
+                URL.revokeObjectURL(
+                    url
+                );
+
+            }
+        );
+
+
+        /* ==================================================
+           NEW PROJECT
+        ================================================== */
+
+        newProjectButton.addEventListener(
+            "click",
+            resetUI
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
